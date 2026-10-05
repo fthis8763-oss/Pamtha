@@ -1,0 +1,943 @@
+<!DOCTYPE html>
+<html lang="si">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pamtha Official App</title>
+    <!-- Google Fonts: Poppins -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-gradient: linear-gradient(135deg, #0f0f17 0%, #1a1a2e 100%);
+            --card-bg: rgba(30, 30, 45, 0.85);
+            --text-color: #ffffff;
+            --accent-color: #ff3b30;
+            --secondary-color: #2c2c3e;
+            --subtext-color: #a0a0b0;
+            --border-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .light-mode {
+            --bg-gradient: linear-gradient(135deg, #f4f5f9 0%, #e2e8f0 100%);
+            --card-bg: rgba(255, 255, 255, 0.9);
+            --text-color: #1a1a24;
+            --accent-color: #ff3b30;
+            --secondary-color: #e4e5ee;
+            --subtext-color: #606070;
+            --border-color: rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Poppins', sans-serif;
+            transition: background 0.3s, color 0.3s;
+        }
+
+        body {
+            background: var(--bg-gradient);
+            background-attachment: fixed;
+            color: var(--text-color);
+            padding-bottom: 80px;
+            min-height: 100vh;
+        }
+
+        /* Header */
+        header {
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            padding: 12px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .profile-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .avatar {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, #ff3b30, #ff9500);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 18px;
+            font-weight: bold;
+            color: white;
+            box-shadow: 0 4px 10px rgba(255,59,48,0.3);
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .theme-toggle, .lang-select {
+            background: var(--secondary-color);
+            border: 1px solid var(--border-color);
+            color: var(--text-color);
+            padding: 6px 10px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 12px;
+            outline: none;
+        }
+
+        /* Container & Sections */
+        .container {
+            padding: 15px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .section-view, .tab-content {
+            display: none;
+        }
+
+        .section-view.active, .tab-content.active {
+            display: block;
+            animation: fadeIn 0.4s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Card Design */
+        .card {
+            background: var(--card-bg);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 15px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+        }
+
+        .card h2 {
+            font-size: 17px;
+            margin-bottom: 10px;
+            color: var(--accent-color);
+            font-weight: 600;
+        }
+
+        .btn {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, #ff3b30, #ff5e3a);
+            color: white;
+            text-align: center;
+            border-radius: 12px;
+            text-decoration: none;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            margin-top: 10px;
+            box-shadow: 0 4px 15px rgba(255,59,48,0.3);
+        }
+
+        .btn:active {
+            transform: scale(0.98);
+        }
+
+        .btn-secondary {
+            background: var(--secondary-color);
+            color: var(--text-color);
+            box-shadow: none;
+            border: 1px solid var(--border-color);
+        }
+
+        /* Input fields */
+        .input-field {
+            width: 100%;
+            padding: 12px;
+            background: var(--secondary-color);
+            border: 1px solid var(--border-color);
+            color: var(--text-color);
+            border-radius: 10px;
+            margin-bottom: 10px;
+            outline: none;
+            font-size: 14px;
+        }
+
+        /* Video Iframe */
+        .video-container {
+            position: relative;
+            padding-bottom: 56.25%;
+            height: 0;
+            overflow: hidden;
+            border-radius: 14px;
+            margin-top: 10px;
+        }
+
+        .video-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: 0;
+        }
+
+        /* Social Links & Shop Grids */
+        .social-grid, .shop-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .social-btn, .shop-item {
+            background: var(--secondary-color);
+            color: var(--text-color);
+            padding: 12px;
+            border-radius: 12px;
+            text-align: center;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 12px;
+            border: 1px solid var(--border-color);
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .shop-item:hover, .social-btn:hover {
+            border-color: var(--accent-color);
+            background: rgba(255, 59, 48, 0.05);
+        }
+
+        /* Game Canvas */
+        .game-box {
+            text-align: center;
+        }
+
+        canvas {
+            background-color: #0b0b12;
+            border: 2px solid var(--accent-color);
+            border-radius: 12px;
+            max-width: 100%;
+            display: block;
+            margin: 10px auto;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+        }
+
+        .game-info {
+            display: flex;
+            justify-content: space-around;
+            font-weight: 600;
+            margin-bottom: 6px;
+            font-size: 12px;
+            color: var(--subtext-color);
+        }
+
+        .controls-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+            max-width: 180px;
+            margin: 10px auto 0 auto;
+        }
+
+        .ctrl-btn {
+            background: var(--secondary-color);
+            color: var(--text-color);
+            border: 1px solid var(--border-color);
+            padding: 14px;
+            font-size: 16px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .ctrl-btn:active {
+            background: var(--accent-color);
+            color: white;
+        }
+
+        /* Bottom Nav */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: var(--card-bg);
+            backdrop-filter: blur(15px);
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 0;
+            box-shadow: 0 -4px 20px rgba(0,0,0,0.15);
+            border-top: 1px solid var(--border-color);
+            z-index: 100;
+        }
+
+        .nav-item {
+            color: var(--subtext-color);
+            text-decoration: none;
+            font-size: 11px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 3px;
+            cursor: pointer;
+        }
+
+        .nav-item.active {
+            color: var(--accent-color);
+            font-weight: 600;
+        }
+
+        .nav-icon {
+            font-size: 18px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header -->
+    <header>
+        <div class="profile-header">
+            <div class="avatar" id="header-avatar">P</div>
+            <div>
+                <h3 id="header-username" style="font-size: 15px; font-weight: 600;">Pamtha App</h3>
+                <p style="font-size: 11px; color: var(--subtext-color);" id="header-email">Official App</p>
+            </div>
+        </div>
+        <div class="header-actions">
+            <select class="lang-select" id="languageSelector" onchange="changeLanguage(this.value)">
+                <option value="si">සිංහල</option>
+                <option value="ta">தமிழ்</option>
+                <option value="en">English</option>
+            </select>
+            <button class="theme-toggle" onclick="toggleTheme()">🌙 / ☀️</button>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <div class="container">
+
+        <!-- AUTH SECTION (LOGIN / SIGNUP) -->
+        <div id="auth-section" class="section-view active">
+            <div class="card" style="text-align: center;">
+                <h2 id="txt-auth-title">🔐 Pamtha App Login</h2>
+                <p id="txt-auth-desc" style="color: var(--subtext-color); margin-bottom: 15px; font-size: 12px;">ඔබගේ ගිණුම සාදා App එකට ඇතුළු වන්න:</p>
+                
+                <input type="text" id="auth-name" class="input-field" placeholder="ඔබගේ නම (Username)">
+                <input type="email" id="auth-email" class="input-field" placeholder="ඊමේල් ලිපිනය (Email)">
+                <button class="btn" onclick="handleAuth()" id="txt-auth-btn">Account එක සාදා Login වන්න</button>
+            </div>
+        </div>
+
+        <!-- MAIN APP CONTENT -->
+        <div id="main-app-section" class="section-view">
+
+            <!-- TAB 1: HOME & VIDEOS -->
+            <div id="home" class="tab-content active">
+                <div class="card">
+                    <h2 id="txt-notice-title">📢 Notice & Bonus</h2>
+                    <p id="txt-notice-desc" style="font-size: 13px; color: var(--subtext-color);">යූටියුබ් චැනල් එක Subscribe කරලා නොමිලේ බෝනස් කාසි 100ක් ලබා ගන්න!</p>
+                    <button class="btn" onclick="playClickSound(); claimSubBonus()" id="sub-btn" style="background: #ff0000; margin-top: 10px;">🔴 Subscribe & Claim +100 Coins</button>
+                </div>
+
+                <div class="card">
+                    <h2 id="txt-video-title">🎬 Latest Video</h2>
+                    <div class="video-container">
+                        <iframe src="https://www.youtube.com/embed/" allowfullscreen></iframe>
+                    </div>
+                    <a href="https://youtube.com/@pamtha?si=sXHZnSZaTXIMz3ql" target="_blank" class="btn" onclick="playClickSound()">Visit YouTube Channel</a>
+                </div>
+            </div>
+
+            <!-- TAB 2: GAME (PAC-MAN GOLD HUNT + SHOP + 7 GUNS) -->
+            <div id="game" class="tab-content">
+                <div class="card game-box">
+                    <h2 id="txt-game-title">🪙 Pac-Man Gold Hunt & Gun Shop</h2>
+                    <div class="game-info">
+                        <span id="score-display">Score: 0</span>
+                        <span id="coin-display" style="color: gold;">Coins: 🪙 50</span>
+                        <span id="level-display" style="color: #ff9500;">Level: 1/100</span>
+                    </div>
+                    <div class="game-info">
+                        <span id="lives-display" style="color: #ff3b30;">Lives: ❤️❤️❤️</span>
+                        <span id="ammo-display" style="color: #00ffff;">Weapon: Basic Pistol</span>
+                    </div>
+                    <div class="game-info" style="font-size: 11px; margin-bottom: 4px;">
+                        <span id="highscore-display">High Score: 0</span>
+                    </div>
+                    
+                    <!-- Game Canvas -->
+                    <canvas id="gameCanvas" width="280" height="280"></canvas>
+                    
+                    <p id="game-status" style="font-weight: bold; margin-top: 5px; font-size: 12px; color: var(--accent-color);"></p>
+
+                    <!-- Controllers & Shoot Button -->
+                    <div class="controls-grid">
+                        <div></div>
+                        <button class="ctrl-btn" onclick="changeDirection('UP')">⬆</button>
+                        <div></div>
+                        <button class="ctrl-btn" onclick="changeDirection('LEFT')">⬅️</button>
+                        <button class="ctrl-btn" onclick="shootGhost()" style="background: #00ffff; color: #000;" title="Shoot Ghost">🔫</button>
+                        <button class="ctrl-btn" onclick="changeDirection('RIGHT')">➡️</button>
+                        <div></div>
+                        <button class="ctrl-btn" onclick="changeDirection('DOWN')">⬇️</button>
+                        <div></div>
+                    </div>
+
+                    <!-- 7 Guns Gold Shop -->
+                    <div style="margin-top: 15px; border-top: 1px solid var(--border-color); padding-top: 10px;">
+                        <h3 style="font-size: 13px; color: gold; margin-bottom: 8px;" id="txt-shop-title">🛒 Weapon Shop (Select Your Gun)</h3>
+                        <div class="shop-grid">
+                            <button class="shop-item" onclick="playClickSound(); buyGun('Basic Pistol', 50)">1. 🔫 Basic Pistol<br><span style="color:gold">🪙50</span></button>
+                            <button class="shop-item" onclick="playClickSound(); buyGun('Double Barrel', 90)">2. 💥 Double Barrel<br><span style="color:gold">🪙90</span></button>
+                            <button class="shop-item" onclick="playClickSound(); buyGun('Shotgun', 140)">3. 🔥 Shotgun<br><span style="color:gold">🪙140</span></button>
+                            <button class="shop-item" onclick="playClickSound(); buyGun('Plasma Blaster', 200)">4. ⚡ Plasma Blaster<br><span style="color:gold">🪙200</span></button>
+                            <button class="shop-item" onclick="playClickSound(); buyGun('Ice Freezer Gun', 280)">5. ❄️ Ice Freezer<br><span style="color:gold">🪙280</span></button>
+                            <button class="shop-item" onclick="playClickSound(); buyGun('Flame Thrower', 380)">6. 🔥 Flame Thrower<br><span style="color:gold">🪙380</span></button>
+                            <button class="shop-item" onclick="playClickSound(); buyGun('Ultimate Laser', 500)" style="grid-column: span 2; background: rgba(51,17,68,0.6); border-color: gold;">7. 💎 Ultimate Laser Cannon <span style="color:gold">(🪙500)</span></button>
+                        </div>
+                    </div>
+
+                    <button class="btn" onclick="playClickSound(); resetGame()" style="margin-top: 12px;">Restart Game</button>
+                </div>
+            </div>
+
+            <!-- TAB 3: MUSIC (Background / Screen-off Playable & File Upload) -->
+            <div id="music" class="tab-content">
+                <div class="card">
+                    <h2 id="txt-music-title">🎵 Background Music Player</h2>
+                    <p style="margin-bottom: 10px; color: var(--subtext-color); font-size: 12px;" id="txt-music-desc">ඔබගේ ෆෝන් එකෙන් සිංදු Select කර, Screen එක Off කරලා තියෙද්දීත් අහන්න:</p>
+                    
+                    <input type="file" id="audioFileUploader" accept="audio/*" class="input-field" onchange="loadLocalAudio(event)">
+                    
+                    <audio id="bgAudioPlayer" controls style="width: 100%; margin-top: 10px;" crossorigin="anonymous"></audio>
+                </div>
+            </div>
+
+            <!-- TAB 4: PROFILE -->
+            <div id="profile" class="tab-content">
+                <div class="card">
+                    <h2 id="txt-profile-title">👤 My Account & Profile</h2>
+                    <p style="color: var(--subtext-color); font-size: 12px; margin-bottom: 12px;" id="txt-profile-desc">ඔබගේ ගිණුමේ විස්තර බලාගන්න සහ වෙනස් කරන්න:</p>
+                    
+                    <label style="font-size: 11px; color: var(--subtext-color);">නම (Name):</label>
+                    <input type="text" id="edit-name" class="input-field">
+                    
+                    <label style="font-size: 11px; color: var(--subtext-color);">ඊමේල් (Email):</label>
+                    <input type="email" id="edit-email" class="input-field">
+                    
+                    <button class="btn" onclick="playClickSound(); updateProfile()" id="txt-save-btn">විස්තර Save කරගන්න</button>
+                    <button class="btn btn-secondary" onclick="playClickSound(); logout()" style="margin-top: 8px;" id="txt-logout-btn">Logout වෙන්න</button>
+                </div>
+            </div>
+
+            <!-- TAB 5: SOCIAL & CONTACT -->
+            <div id="social" class="tab-content">
+                <div class="card">
+                    <h2 id="txt-social-title">🌐 Connect & Contact Us</h2>
+                    <p style="color: var(--subtext-color); font-size: 12px; margin-bottom: 10px;">අපගේ සමාජ මාධ්‍ය පිටු සමඟ එකතු වන්න:</p>
+                    
+                    <div class="social-grid">
+                        <a href="https://www.facebook.com/share/14sZHA9CZk5/" target="_blank" class="social-btn" style="border-left: 3px solid #1877F2;">📘 Facebook Page</a>
+                        <a href="https://www.tiktok.com/@pamthaoriginal0?_r=1&_t=ZS-9AJG3omStAV" target="_blank" class="social-btn" style="border-left: 3px solid #000000;">🎵 TikTok Profile</a>
+                        <a href="https://youtube.com/@pamtha?si=sXHZnSZaTXIMz3ql" target="_blank" class="social-btn" style="border-left: 3px solid #FF0000;">▶️ YouTube Channel</a>
+                        <a href="#" class="social-btn" style="border-left: 3px solid #25D366;">💬 WhatsApp Contact</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bottom Navigation Bar -->
+            <nav class="bottom-nav">
+                <div class="nav-item active" onclick="playClickSound(); switchTab('home', this)">
+                    <span class="nav-icon">🏠</span>
+                    <span id="nav-home">Home</span>
+                </div>
+                <div class="nav-item" onclick="playClickSound(); switchTab('game', this)">
+                    <span class="nav-icon">🎮</span>
+                    <span id="nav-game">Game</span>
+                </div>
+                <div class="nav-item" onclick="playClickSound(); switchTab('music', this)">
+                    <span class="nav-icon">🎵</span>
+                    <span id="nav-music">Music</span>
+                </div>
+                <div class="nav-item" onclick="playClickSound(); switchTab('profile', this)">
+                    <span class="nav-icon">👤</span>
+                    <span id="nav-profile">Profile</span>
+                </div>
+                <div class="nav-item" onclick="playClickSound(); switchTab('social', this)">
+                    <span class="nav-icon">🌐</span>
+                    <span id="nav-social">Social</span>
+                </div>
+            </nav>
+
+        </div>
+
+    </div>
+
+    <!-- JavaScript -->
+    <script>
+        let currentUser = JSON.parse(localStorage.getItem("pamtha_user")) || null;
+        let coins = parseInt(localStorage.getItem("pamtha_coins")) || 50;
+        let currentGun = localStorage.getItem("pamtha_gun") || "Basic Pistol";
+        let highScore = localStorage.getItem("pamtha_highscore") || 0;
+        let subClaimed = localStorage.getItem("pamtha_sub_claimed") === "true";
+        let currentLang = localStorage.getItem("pamtha_lang") || "si";
+
+        // Translations Dictionary (Sinhala, Tamil, English)
+        const translations = {
+            si: {
+                authTitle: "🔐 Pamtha App Login",
+                authDesc: "ඔබගේ ගිණුම සාදා App එකට ඇතුළු වන්න:",
+                authNamePlaceholder: "ඔබගේ නම (Username)",
+                authEmailPlaceholder: "ඊමේල් ලිපිනය (Email)",
+                authBtn: "Account එක සාදා Login වන්න",
+                noticeTitle: "📢 Notice & Bonus",
+                noticeDesc: "යූටියුබ් චැනල් එක Subscribe කරලා නොමිලේ බෝනස් කාසි 100ක් ලබා ගන්න!",
+                videoTitle: "🎬 Latest Video",
+                gameTitle: "🪙 Pac-Man Gold Hunt & Gun Shop",
+                shopTitle: "🛒 Weapon Shop (Select Your Gun)",
+                musicTitle: "🎵 Background Music Player",
+                musicDesc: "ඔබගේ ෆෝන් එකෙන් සිංදු Select කර, Screen එක Off කරලා තියෙද්දීත් අහන්න:",
+                profileTitle: "👤 My Account & Profile",
+                profileDesc: "ඔබගේ ගිණුමේ විස්තර බලාගන්න සහ වෙනස් කරන්න:",
+                saveBtn: "විස්තර Save කරගන්න",
+                logoutBtn: "Logout වෙන්න",
+                socialTitle: "🌐 Connect & Contact Us",
+                navHome: "Home", navGame: "Game", navMusic: "Music", navProfile: "Profile", navSocial: "Social"
+            },
+            ta: {
+                authTitle: "🔐 Pamtha App உள்நுழைவு",
+                authDesc: "உங்கள் கணக்கை உருவாக்கி App-ஐ பயன்படுத்தவும்:",
+                authNamePlaceholder: "உங்கள் பெயர் (Username)",
+                authEmailPlaceholder: "மின்னஞ்சல் (Email)",
+                authBtn: "கணக்கை உருவாக்கி உள்நுழைக",
+                noticeTitle: "📢 அறிவிப்பு & போனஸ்",
+                noticeDesc: "YouTube சேனலை Subscribe செய்து இலவசமாக 100 போனர் நாணயங்களைப் பெறுங்கள்!",
+                videoTitle: "🎬 சமீபத்திய வீடியோ",
+                gameTitle: "🪙 Pac-Man Gold Hunt & Gun Shop",
+                shopTitle: "🛒 ஆயுத கடை (Weapon Shop)",
+                musicTitle: "🎵 பின்னணி இசைப் 플레이어",
+                musicDesc: "உங்கள் தொலைபேசியிலிருந்து பாடல்களைத் தேர்ந்தெடுத்து Screen ஆஃப் ஆனாலும் கேட்கலாம்:",
+                profileTitle: "👤 எனது கணக்கு & சுயவிவரம்",
+                profileDesc: "உங்கள் கணக்கு விவரங்களை பார்வையிட மற்றும் திருத்த:",
+                saveBtn: "விவரங்களை சேமிக்கவும்",
+                logoutBtn: "வெளியேறு (Logout)",
+                socialTitle: "🌐 எங்களைத் தொடர்பு கொள்ள",
+                navHome: "Home", navGame: "Game", navMusic: "Music", navProfile: "Profile", navSocial: "Social"
+            },
+            en: {
+                authTitle: "🔐 Pamtha App Login",
+                authDesc: "Create your account and enter the app:",
+                authNamePlaceholder: "Your Name (Username)",
+                authEmailPlaceholder: "Email Address (Email)",
+                authBtn: "Create Account & Login",
+                noticeTitle: "📢 Notice & Bonus",
+                noticeDesc: "Subscribe to our YouTube channel & claim 100 free bonus coins!",
+                videoTitle: "🎬 Latest Video",
+                gameTitle: "🪙 Pac-Man Gold Hunt & Gun Shop",
+                shopTitle: "🛒 Weapon Shop (Select Your Gun)",
+                musicTitle: "🎵 Background Music Player",
+                musicDesc: "Select songs from your phone & play even when screen is off:",
+                profileTitle: "👤 My Account & Profile",
+                profileDesc: "View and edit your account details:",
+                saveBtn: "Save Details",
+                logoutBtn: "Logout",
+                socialTitle: "🌐 Connect & Contact Us",
+                navHome: "Home", navGame: "Game", navMusic: "Music", navProfile: "Profile", navSocial: "Social"
+            }
+        };
+
+        window.onload = function() {
+            document.getElementById("languageSelector").value = currentLang;
+            applyLanguage(currentLang);
+            if (currentUser) {
+                activateAppView();
+            }
+            setupMediaSession();
+        };
+
+        function changeLanguage(lang) {
+            currentLang = lang;
+            localStorage.setItem("pamtha_lang", lang);
+            applyLanguage(lang);
+        }
+
+        function applyLanguage(lang) {
+            let t = translations[lang];
+            document.getElementById("txt-auth-title").innerText = t.authTitle;
+            document.getElementById("txt-auth-desc").innerText = t.authDesc;
+            document.getElementById("auth-name").placeholder = t.authNamePlaceholder;
+            document.getElementById("auth-email").placeholder = t.authEmailPlaceholder;
+            document.getElementById("txt-auth-btn").innerText = t.authBtn;
+            document.getElementById("txt-notice-title").innerText = t.noticeTitle;
+            document.getElementById("txt-notice-desc").innerText = t.noticeDesc;
+            document.getElementById("txt-video-title").innerText = t.videoTitle;
+            document.getElementById("txt-game-title").innerText = t.gameTitle;
+            document.getElementById("txt-shop-title").innerText = t.shopTitle;
+            document.getElementById("txt-music-title").innerText = t.musicTitle;
+            document.getElementById("txt-music-desc").innerText = t.musicDesc;
+            document.getElementById("txt-profile-title").innerText = t.profileTitle;
+            document.getElementById("txt-profile-desc").innerText = t.profileDesc;
+            document.getElementById("txt-save-btn").innerText = t.saveBtn;
+            document.getElementById("txt-logout-btn").innerText = t.logoutBtn;
+            document.getElementById("txt-social-title").innerText = t.socialTitle;
+            document.getElementById("nav-home").innerText = t.navHome;
+            document.getElementById("nav-game").innerText = t.navGame;
+            document.getElementById("nav-music").innerText = t.navMusic;
+            document.getElementById("nav-profile").innerText = t.navProfile;
+            document.getElementById("nav-social").innerText = t.navSocial;
+        }
+
+        function handleAuth() {
+            let name = document.getElementById("auth-name").value.trim();
+            let email = document.getElementById("auth-email").value.trim();
+            if(!name || !email) {
+                alert("කරුණාකර නම සහ ඊමේල් ලිපිනය ඇතුළත් කරන්න!");
+                return;
+            }
+            currentUser = { name: name, email: email };
+            localStorage.setItem("pamtha_user", JSON.stringify(currentUser));
+            activateAppView();
+        }
+
+        function activateAppView() {
+            document.getElementById("auth-section").classList.remove("active");
+            document.getElementById("main-app-section").classList.add("active");
+            
+            document.getElementById("header-username").innerText = currentUser.name;
+            document.getElementById("header-email").innerText = currentUser.email;
+            document.getElementById("header-avatar").innerText = currentUser.name.charAt(0).toUpperCase();
+            
+            document.getElementById("edit-name").value = currentUser.name;
+            document.getElementById("edit-email").value = currentUser.email;
+            
+            updateDisplays();
+        }
+
+        function updateProfile() {
+            let name = document.getElementById("edit-name").value.trim();
+            let email = document.getElementById("edit-email").value.trim();
+            if(!name || !email) {
+                alert("විස්තර හිස්ව තැබිය නොහැක!");
+                return;
+            }
+            currentUser.name = name;
+            currentUser.email = email;
+            localStorage.setItem("pamtha_user", JSON.stringify(currentUser));
+            
+            document.getElementById("header-username").innerText = name;
+            document.getElementById("header-email").innerText = email;
+            document.getElementById("header-avatar").innerText = name.charAt(0).toUpperCase();
+            alert("ගිණුමේ විස්තර සාර්ථකව යාවත්කාලීන විය! ✅");
+        }
+
+        function logout() {
+            localStorage.removeItem("pamtha_user");
+            location.reload();
+        }
+
+        function switchTab(tabId, element) {
+            document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+            document.getElementById(tabId).classList.add('active');
+            element.classList.add('active');
+        }
+
+        function toggleTheme() {
+            document.body.classList.toggle('light-mode');
+        }
+
+        function updateDisplays() {
+            document.getElementById("coin-display").innerText = "Coins: 🪙 " + coins;
+            document.getElementById("ammo-display").innerText = "Weapon: " + currentGun;
+            document.getElementById("highscore-display").innerText = "High Score: " + highScore;
+            if(subClaimed) {
+                let btn = document.getElementById("sub-btn");
+                if(btn) {
+                    btn.innerText = "✅ Subscribed & Claimed!";
+                    btn.style.background = "#444";
+                }
+            }
+        }
+
+        function claimSubBonus() {
+            if(subClaimed) {
+                alert("ඔබ දැනටමත් බෝනස් කාසි ලබාගෙන ඇත!");
+                return;
+            }
+            subClaimed = true;
+            localStorage.setItem("pamtha_sub_claimed", "true");
+            coins += 100;
+            localStorage.setItem("pamtha_coins", coins);
+            updateDisplays();
+            alert("🎉 සුභ පැතුම්! යූටියුබ් සබ්ස්ක්‍රයිබ් කිරීම වෙනුවෙන් බෝනස් කාසි 🪙100ක් එකතු විය!");
+        }
+
+        function buyGun(gunName, price) {
+            if(coins >= price) {
+                coins -= price;
+                currentGun = gunName;
+                localStorage.setItem("pamtha_coins", coins);
+                localStorage.setItem("pamtha_gun", currentGun);
+                updateDisplays();
+                alert("🔫 සුභ පැතුම්! ඔබ '" + gunName + "' තුවක්කුව මිලදී ගත්තා!");
+            } else {
+                alert("⚠️ ප්‍රමාණවත් කාසි නැත! තවදුරටත් කාසි එකතු කරන්න.");
+            }
+        }
+
+        // --- AUDIO & MEDIA SESSION API (Background Play & Sound Effects) ---
+        let audioCtx = null;
+        function initAudio() {
+            if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        }
+
+        function playClickSound() {
+            initAudio();
+            if (!audioCtx) return;
+            let osc = audioCtx.createOscillator();
+            let gain = audioCtx.createGain();
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(600, audioCtx.currentTime);
+            osc.frequency.exponentialRampToValueAtTime(300, audioCtx.currentTime + 0.05);
+            gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.05);
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            osc.start();
+            osc.stop(audioCtx.currentTime + 0.05);
+        }
+
+        function playCreepyCoinSound() {
+            initAudio();
+            if (!audioCtx) return;
+            let osc = audioCtx.createOscillator();
+            let gain = audioCtx.createGain();
+            osc.type = 'sawtooth';
+            osc.frequency.setValueAtTime(150, audioCtx.currentTime);
+            osc.frequency.exponentialRampToValueAtTime(45, audioCtx.currentTime + 0.2);
+            gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.2);
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            osc.start();
+            osc.stop(audioCtx.currentTime + 0.2);
+        }
+
+        function playShootSound() {
+            initAudio();
+            if (!audioCtx) return;
+            let osc = audioCtx.createOscillator();
+            let gain = audioCtx.createGain();
+            osc.type = 'square';
+            osc.frequency.setValueAtTime(400, audioCtx.currentTime);
+            osc.frequency.exponentialRampToValueAtTime(80, audioCtx.currentTime + 0.1);
+            gain.gain.setValueAtTime(0.4, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.1);
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            osc.start();
+            osc.stop(audioCtx.currentTime + 0.1);
+        }
+
+        function playScaryGameOverSound() {
+            initAudio();
+            if (!audioCtx) return;
+            let osc = audioCtx.createOscillator();
+            let gain = audioCtx.createGain();
+            osc.type = 'sawtooth';
+            osc.frequency.setValueAtTime(120, audioCtx.currentTime);
+            osc.frequency.linearRampToValueAtTime(30, audioCtx.currentTime + 0.6);
+            gain.gain.setValueAtTime(0.5, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.6);
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            osc.start();
+            osc.stop(audioCtx.currentTime + 0.6);
+        }
+
+        // Local Audio Upload & Screen Off Background Playback
+        function loadLocalAudio(event) {
+            let file = event.target.files[0];
+            if (file) {
+                let audioPlayer = document.getElementById("bgAudioPlayer");
+                let fileURL = URL.createObjectURL(file);
+                audioPlayer.src = fileURL;
+                audioPlayer.play();
+
+                if ('mediaSession' in navigator) {
+                    navigator.mediaSession.metadata = new MediaMetadata({
+                        title: file.name,
+                        artist: 'Pamtha App',
+                        album: 'Local Music'
+                    });
+                }
+            }
+        }
+
+        function setupMediaSession() {
+            if ('mediaSession' in navigator) {
+                navigator.mediaSession.setActionHandler('play', function() {
+                    document.getElementById("bgAudioPlayer").play();
+                });
+                navigator.mediaSession.setActionHandler('pause', function() {
+                    document.getElementById("bgAudioPlayer").pause();
+                });
+            }
+        }
+
+        // --- GAME LOGIC ---
+        const canvas = document.getElementById("gameCanvas");
+        const ctx = canvas.getContext("2d");
+
+        const box = 20;
+        let score = 0;
+        let lives = 3;
+        let gameInterval;
+        let isGameOver = false;
+
+        let pacman = { x: 2 * box, y: 2 * box, d: "RIGHT" };
+        let ghost = { x: 10 * box, y: 10 * box };
+        
+        let obstacles = [{x: 4 * box, y: 4 * box}, {x: 8 * box, y: 4 * box}];
+        let coinsList = [{x: 2 * box, y: 4 * box}, {x: 6 * box, y: 2 * box}, {x: 10 * box, y: 8 * box}];
+
+        function changeDirection(dir) {
+            initAudio();
+            if (dir == "UP" && pacman.d != "DOWN") pacman.d = "UP";
+            if (dir == "DOWN" && pacman.d != "UP") pacman.d = "DOWN";
+            if (dir == "LEFT" && pacman.d != "RIGHT") pacman.d = "LEFT";
+            if (dir == "RIGHT" && pacman.d != "LEFT") pacman.d = "RIGHT";
+        }
+
+        function shootGhost() {
+            playShootSound();
+            ghost.x = Math.floor(Math.random() * (canvas.width / box)) * box;
+            ghost.y = Math.floor(Math.random() * (canvas.height / box)) * box;
+            document.getElementById("game-status").innerText = "🔫 " + currentGun + " මඟින් හොල්මනට වෙඩි තැබුවා!";
+        }
+
+        function drawGame() {
+            if (isGameOver) return;
+
+            ctx.fillStyle = "#0b0b12";
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            for (let i = 0; i < obstacles.length; i++) {
+                ctx.fillStyle = "#3b3b4f";
+                ctx.fillRect(obstacles[i].x, obstacles[i].y, box, box);
+            }
+
+            for (let i = 0; i < coinsList.length; i++) {
+                ctx.fillStyle = "gold";
+                ctx.beginPath();
+                ctx.arc(coinsList[i].x + box/2, coinsList[i].y + box/2, 6, 0, Math.PI * 2);
+                ctx.fill();
+            }
+
+            ctx.fillStyle = "#ffcc00";
+            ctx.beginPath();
+            ctx.arc(pacman.x + box/2, pacman.y + box/2, 8, 0, Math.PI * 2);
+            ctx.fill();
+
+            ctx.fillStyle = "#ff3b30";
+            ctx.beginPath();
+            ctx.arc(ghost.x + box/2, ghost.y + box/2, 8, 0, Math.PI * 2);
+            ctx.fill();
+
+            let pX = pacman.x;
+            let pY = pacman.y;
+
+            if (pacman.d == "UP") pY -= box;
+            if (pacman.d == "DOWN") pY += box;
+            if (pacman.d == "LEFT") pX -= box;
+            if (pacman.d == "RIGHT") pX += box;
+
+            if (pX < 0) pX = canvas.width - box;
+            if (pX >= canvas.width) pX = 0;
+            if (pY < 0) pY = canvas.height - box;
+            if (pY >= canvas.height) pY = 0;
+
+            pacman.x = pX;
+            pacman.y = pY;
+
+            if (ghost.x < pacman.x) ghost.x += box;
+            else if (ghost.x > pacman.x) ghost.x -= box;
+            if (ghost.y < pacman.y) ghost.y += box;
+            else if (ghost.y > pacman.y) ghost.y -= box;
+
+            for (let i = 0; i < coinsList.length; i++) {
+                if (pacman.x === coinsList[i].x && pacman.y === coinsList[i].y) {
+                    playCreepyCoinSound();
+                    score += 10;
+                    coinsList.splice(i, 1);
+                    coinsList.push({x: Math.floor(Math.random() * 12) * box, y: Math.floor(Math.random() * 12) * box});
+                    
+                    coins += 5;
+                    localStorage.setItem("pamtha_coins", coins);
+                    document.getElementById("score-display").innerText = "Score: " + score;
+                    updateDisplays();
+                    
+                    if (score > highScore) {
+                        highScore = score;
+                        localStorage.setItem("pamtha_highscore", highScore);
+                        updateDisplays();
+                    }
+                    break;
+                }
+            }
+
+            if (Math.abs(pacman.x - ghost.x) < box/2 && Math.abs(pacman.y - ghost.y) < box/2) {
+                lives--;
+                updateLivesDisplay();
+                if(lives <= 0) {
+                    isGameOver = true;
+                    clearInterval(gameInterval);
+                    playScaryGameOverSound();
+                    document.getElementById("game-status").innerText = "💀 GAME OVER! හොල්මන ඔබව අල්ලා ගත්තා!";
+                } else {
+                    ghost.x = 10 * box;
+                    ghost.y = 10 * box;
+                    document.getElementById("game-status").innerText = "⚠️ ජීවිතයක් අහිමි විය!";
+                }
+            }
+        }
+
+        function updateLivesDisplay() {
+            let hearts = "";
+            for (let i = 0; i < lives; i++) hearts += "❤️";
+            document.getElementById("lives-display").innerText = "Lives: " + hearts;
+        }
+
+        function resetGame() {
+            clearInterval(gameInterval);
+            score = 0;
+            lives = 3;
+            isGameOver = false;
+            pacman = { x: 2 * box, y: 2 * box, d: "RIGHT" };
+            ghost = { x: 10 * box, y: 10 * box };
+            document.getElementById("score-display").innerText = "Score: 0";
+            updateLivesDisplay();
+            document.getElementById("game-status").innerText = "";
+            gameInterval = setInterval(drawGame, 220);
+        }
+
+        gameInterval = setInterval(drawGame, 220);
+    </script>
+</body>
+</html>
